@@ -58,92 +58,19 @@ public class Main_3d extends Application {
         mainBox.setTranslateY(y);
         mainBox.setTranslateZ(z);
         double w = mainBox.getWidth();
-        if (w < 20){
-            Box temp = new Box(w,w,w);
-            temp.setTranslateX(x-w); temp.setTranslateY(y); temp.setTranslateZ(z-w);
-            result.getChildren().add(temp);
-            temp = new Box(w,w,w);
-            temp.setTranslateX(x-w); temp.setTranslateY(y-w); temp.setTranslateZ(z);
-            result.getChildren().add(temp);
-            temp = new Box(w,w,w);
-            temp.setTranslateX(x-w); temp.setTranslateY(y-w); temp.setTranslateZ(z-w);
-            result.getChildren().add(temp);
-            temp = new Box(w,w,w);
-            temp.setTranslateX(x-w); temp.setTranslateY(y-w); temp.setTranslateZ(z+w);
-            result.getChildren().add(temp);
-            temp = new Box(w,w,w);
-            temp.setTranslateX(x-w); temp.setTranslateY(y); temp.setTranslateZ(z+w);
-            result.getChildren().add(temp);
-            temp = new Box(w,w,w);
-            temp.setTranslateX(x-w); temp.setTranslateY(y+w); temp.setTranslateZ(z);
-            result.getChildren().add(temp);
-            temp = new Box(w,w,w);
-            temp.setTranslateX(x-w); temp.setTranslateY(y+w); temp.setTranslateZ(z-w);
-            result.getChildren().add(temp);
-            temp = new Box(w,w,w);
-            temp.setTranslateX(x-w); temp.setTranslateY(y+w); temp.setTranslateZ(z+w);
-            result.getChildren().add(temp);
-
-            temp = new Box(w,w,w);
-            temp.setTranslateX(x+w); temp.setTranslateY(y); temp.setTranslateZ(z-w);
-            result.getChildren().add(temp);
-            temp = new Box(w,w,w);
-            temp.setTranslateX(x+w); temp.setTranslateY(y-w); temp.setTranslateZ(z);
-            result.getChildren().add(temp);
-            temp = new Box(w,w,w);
-            temp.setTranslateX(x+w); temp.setTranslateY(y-w); temp.setTranslateZ(z-w);
-            result.getChildren().add(temp);
-            temp = new Box(w,w,w);
-            temp.setTranslateX(x+w); temp.setTranslateY(y-w); temp.setTranslateZ(z+w);
-            result.getChildren().add(temp);
-            temp = new Box(w,w,w);
-            temp.setTranslateX(x+w); temp.setTranslateY(y); temp.setTranslateZ(z+w);
-            result.getChildren().add(temp);
-            temp = new Box(w,w,w);
-            temp.setTranslateX(x+w); temp.setTranslateY(y+w); temp.setTranslateZ(z);
-            result.getChildren().add(temp);
-            temp = new Box(w,w,w);
-            temp.setTranslateX(x+w); temp.setTranslateY(y+w); temp.setTranslateZ(z-w);
-            result.getChildren().add(temp);
-            temp = new Box(w,w,w);
-            temp.setTranslateX(x+w); temp.setTranslateY(y+w); temp.setTranslateZ(z+w);
-            result.getChildren().add(temp);
-
-            temp = new Box(w,w,w);
-            temp.setTranslateX(x); temp.setTranslateY(y-w); temp.setTranslateZ(z+w);
-            result.getChildren().add(temp);
-            temp = new Box(w,w,w);
-            temp.setTranslateX(x); temp.setTranslateY(y-w); temp.setTranslateZ(z-w);
-            result.getChildren().add(temp);
-            temp = new Box(w,w,w);
-            temp.setTranslateX(x); temp.setTranslateY(y+w); temp.setTranslateZ(z-w);
-            result.getChildren().add(temp);
-            temp = new Box(w,w,w);
-            temp.setTranslateX(x); temp.setTranslateY(y+w); temp.setTranslateZ(z+w);
-            result.getChildren().add(temp);
-        }else{
-            result.getChildren().addAll(Menger_sponge(new Box(w/3, w/3, w/3), x, y-w, z+w));
-            result.getChildren().addAll(Menger_sponge(new Box(w/3, w/3, w/3), x, y+w, z+w));
-            result.getChildren().addAll(Menger_sponge(new Box(w/3, w/3, w/3), x, y-w, z-w));
-            result.getChildren().addAll(Menger_sponge(new Box(w/3, w/3, w/3), x, y+w, z-w));
-
-            result.getChildren().addAll(Menger_sponge(new Box(w/3, w/3, w/3), x+w, y-w, z+w));
-            result.getChildren().addAll(Menger_sponge(new Box(w/3, w/3, w/3), x+w, y+w, z+w));
-            result.getChildren().addAll(Menger_sponge(new Box(w/3, w/3, w/3), x+w, y-w, z-w));
-            result.getChildren().addAll(Menger_sponge(new Box(w/3, w/3, w/3), x+w, y+w, z-w));
-            result.getChildren().addAll(Menger_sponge(new Box(w/3, w/3, w/3), x+w, y, z+w));
-            result.getChildren().addAll(Menger_sponge(new Box(w/3, w/3, w/3), x+w, y, z-w));
-            result.getChildren().addAll(Menger_sponge(new Box(w/3, w/3, w/3), x+w, y-w, z));
-            result.getChildren().addAll(Menger_sponge(new Box(w/3, w/3, w/3), x+w, y+w, z));
-
-            result.getChildren().addAll(Menger_sponge(new Box(w/3, w/3, w/3), x-w, y-w, z+w));
-            result.getChildren().addAll(Menger_sponge(new Box(w/3, w/3, w/3), x-w, y+w, z+w));
-            result.getChildren().addAll(Menger_sponge(new Box(w/3, w/3, w/3), x-w, y-w, z-w));
-            result.getChildren().addAll(Menger_sponge(new Box(w/3, w/3, w/3), x-w, y+w, z-w));
-            result.getChildren().addAll(Menger_sponge(new Box(w/3, w/3, w/3), x-w, y, z+w));
-            result.getChildren().addAll(Menger_sponge(new Box(w/3, w/3, w/3), x-w, y, z-w));
-            result.getChildren().addAll(Menger_sponge(new Box(w/3, w/3, w/3), x-w, y-w, z));
-            result.getChildren().addAll(Menger_sponge(new Box(w/3, w/3, w/3), x-w, y+w, z));
+        for (int i = -1; i < 2; i++) {
+            for (int j = -1; j < 2; j++) {
+                for (int k = -1; k < 2; k++) {
+                    if (Math.abs(i) + Math.abs(j) + Math.abs(k) < 2) continue;
+                    if (w > 10) {
+                        result.getChildren().addAll(Menger_sponge(new Box(w / 3, w / 3, w / 3), x + i * w, y + j * w, z + k * w));
+                    }else{
+                        Box temp = new Box(w,w,w);
+                        temp.setTranslateX(x+i*w); temp.setTranslateY(y+j*w); temp.setTranslateZ(z+k*w);
+                        result.getChildren().add(temp);
+                    }
+                }
+            }
         }
         return result;
     }
