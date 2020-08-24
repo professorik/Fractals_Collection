@@ -15,7 +15,8 @@ import javafx.util.Duration;
 public class Main_3d extends Application {
     @Override
     public void start(Stage stage) {
-        Group root = new Group(Menger_sponge(new Box(162, 162, 162), 0, 0, 0));
+        Group root = new Group(Jerusalem_cube(new Box(300, 300, 300), 0, 0, 0));
+        //Group root = new Group(Menger_sponge(new Box(162, 162, 162), 0, 0, 0));
         Scene scene = new Scene(root, 720, 720, true, SceneAntialiasing.BALANCED);
         scene.setFill(Color.BLACK);
         Translate pivot = new Translate();
@@ -62,11 +63,46 @@ public class Main_3d extends Application {
             for (int j = -1; j < 2; j++) {
                 for (int k = -1; k < 2; k++) {
                     if (Math.abs(i) + Math.abs(j) + Math.abs(k) < 2) continue;
-                    if (w > 10) {
+                    if (w > 20) {
                         result.getChildren().addAll(Menger_sponge(new Box(w / 3, w / 3, w / 3), x + i * w, y + j * w, z + k * w));
                     }else{
                         Box temp = new Box(w,w,w);
                         temp.setTranslateX(x+i*w); temp.setTranslateY(y+j*w); temp.setTranslateZ(z+k*w);
+                        result.getChildren().add(temp);
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    private static Group Jerusalem_cube(Box mainBox, double x, double y, double z){
+        Group result = new Group();
+        double w = mainBox.getWidth();
+        final double d = Math.sqrt(2) - 1;
+        final double delta = d*w*0.5;
+        final double theta = (1 - Math.sqrt(2)*0.5)*w*0.5;
+        for (int i = -2; i < 3; i++) {
+            for (int j = -2; j < 3; j++) {
+                for (int k = -2; k < 3; k++) {
+                    int m = Math.abs(i) * Math.abs(j) * Math.abs(k);
+                    int s = Math.abs(i) + Math.abs(j) + Math.abs(k);
+                    if (s < 4 && m != 1) continue;
+                    if (w > 50) {
+                        if (Math.abs(i) == 2 && Math.abs(j) == 2 && Math.abs(k) == 2) {
+                            result.getChildren().addAll(Jerusalem_cube(new Box(w * d, w * d, w * d), x + i*theta, y + j*theta, z + k*theta));
+                        }else if (s == 4 && m == 0){
+                            result.getChildren().addAll(Jerusalem_cube(new Box(w * d * d, w * d * d, w * d * d), x + i*delta, y + j*delta, z + k*delta));
+                        }
+                    }else{
+                        Box temp;
+                        if (Math.abs(i) == 2 && Math.abs(j) == 2 && Math.abs(k) == 2) {
+                            temp = new Box(w * d, w * d, w * d);
+                            temp.setTranslateX(x + i * theta); temp.setTranslateY(y + j * theta); temp.setTranslateZ(z + k * theta);
+                        }else if (s == 4 && m == 0){
+                            temp = new Box(w*d*d, w*d*d, w*d*d);
+                            temp.setTranslateX(x + i * delta); temp.setTranslateY(y + j * delta); temp.setTranslateZ(z + k * delta);
+                        }else continue;
                         result.getChildren().add(temp);
                     }
                 }
