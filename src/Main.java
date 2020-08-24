@@ -7,6 +7,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 import javafx.scene.shape.Polygon;
@@ -21,26 +22,46 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        AnchorPane pane = new AnchorPane();
         Group mainGroup = new Group();
-        ScrollPane scrollPane = new ScrollPane(mainGroup);
+        ScrollPane scrollPane = new ScrollPane(pane);
         Scene scene = new Scene(scrollPane, 720, 720);
         primaryStage.setTitle("Fractals");
         primaryStage.setScene(scene);
         primaryStage.show();
-        //mainGroup.getChildren().add(Sierpiński_triangle());
+        //mainGroup.getChildren().add(Sierpinski_triangle());
+        mainGroup.getChildren().add(Sierpinski_carpet(new Rectangle(300, 300, 180, 180)));
+        pane.getChildren().addAll(mainGroup);
         //mainGroup.getChildren().add(circleFractal(360, 360,  360));
         //mainGroup.getChildren().add(tree_fractal(new Line(360, 540, 360, 360), 7*Math.PI/9));
-        mainGroup.getChildren().add(Mandelbrot_set());
+        //mainGroup.getChildren().add(Mandelbrot_set());
     }
 
     public static void main(String[] args) {
         launch(args);
     }
 
+    private static Group Sierpinski_carpet(Rectangle mainRect) throws InterruptedException {
+        Group result = new Group();
+        result.getChildren().add(mainRect);
+        if (mainRect.getWidth() > 1){
+            double x = mainRect.getX(), y = mainRect.getY(), w = mainRect.getWidth();
+            result.getChildren().addAll(Sierpinski_carpet(new Rectangle(x+w/3, y-2*w/3, w/3, w/3)));
+            result.getChildren().addAll(Sierpinski_carpet(new Rectangle(x+w/3, y+4*w/3, w/3, w/3)));
+            result.getChildren().addAll(Sierpinski_carpet(new Rectangle(x-2*w/3, y+w/3, w/3, w/3)));
+            result.getChildren().addAll(Sierpinski_carpet(new Rectangle(x+4*w/3, y+w/3, w/3, w/3)));
+            result.getChildren().addAll(Sierpinski_carpet(new Rectangle(x-2*w/3, y-2*w/3, w/3, w/3)));
+            result.getChildren().addAll(Sierpinski_carpet(new Rectangle(x+4*w/3, y+4*w/3, w/3, w/3)));
+            result.getChildren().addAll(Sierpinski_carpet(new Rectangle(x+4*w/3, y-2*w/3, w/3, w/3)));
+            result.getChildren().addAll(Sierpinski_carpet(new Rectangle(x-2*w/3, y+4*w/3, w/3, w/3)));
+        }
+        return result;
+    }
+
     private static Group Mandelbrot_set(){
         Canvas canvas = new Canvas(); canvas.setHeight(720.0); canvas.setWidth(1440);
         double width = canvas.getWidth(), height = canvas.getHeight();
-        int zoom = 1700;
+        int zoom = 1440;
         int max = 100;
         for (int row = 0; row < height; row++) {
             for (int col = 0; col < width; col++) {
@@ -64,32 +85,32 @@ public class Main extends Application {
         return temp;
     }
 
-    private static Group tree_fractal(Line mainLine, double teta) throws InterruptedException {
+    private static Group tree_fractal(Line mainLine, double theta) throws InterruptedException {
         Group result = new Group();
         double l = Math.sqrt(Math.pow(mainLine.getEndX()-mainLine.getStartX(), 2) + Math.pow(mainLine.getEndY()-mainLine.getStartY(), 2));
         result.getChildren().add(mainLine);
         if (l > 1){
             double x0, y0, y1, x1;
-            x0 = mainLine.getEndX() + (mainLine.getStartX()-mainLine.getEndX())*Math.cos(teta) - (mainLine.getStartY()-mainLine.getEndY())*Math.sin(teta);
-            y0 = mainLine.getEndY() + (mainLine.getStartX()-mainLine.getEndX())*Math.sin(teta) + (mainLine.getStartY()-mainLine.getEndY())*Math.cos(teta);
-            y1 = mainLine.getEndY() - (mainLine.getStartX()-mainLine.getEndX())*Math.sin(teta) + (mainLine.getStartY()-mainLine.getEndY())*Math.cos(teta);
-            x1 = mainLine.getEndX() + (mainLine.getStartX()-mainLine.getEndX())*Math.cos(teta) + (mainLine.getStartY()-mainLine.getEndY())*Math.sin(teta);
-            result.getChildren().addAll(tree_fractal(new Line(mainLine.getEndX(), mainLine.getEndY(), (x0+mainLine.getEndX())*0.5, (y0+mainLine.getEndY())*0.5), teta));
-            result.getChildren().addAll(tree_fractal(new Line(mainLine.getEndX(), mainLine.getEndY(), (x1+mainLine.getEndX())*0.5, (y1+mainLine.getEndY())*0.5), teta));
+            x0 = mainLine.getEndX() + (mainLine.getStartX()-mainLine.getEndX())*Math.cos(theta) - (mainLine.getStartY()-mainLine.getEndY())*Math.sin(theta);
+            y0 = mainLine.getEndY() + (mainLine.getStartX()-mainLine.getEndX())*Math.sin(theta) + (mainLine.getStartY()-mainLine.getEndY())*Math.cos(theta);
+            y1 = mainLine.getEndY() - (mainLine.getStartX()-mainLine.getEndX())*Math.sin(theta) + (mainLine.getStartY()-mainLine.getEndY())*Math.cos(theta);
+            x1 = mainLine.getEndX() + (mainLine.getStartX()-mainLine.getEndX())*Math.cos(theta) + (mainLine.getStartY()-mainLine.getEndY())*Math.sin(theta);
+            result.getChildren().addAll(tree_fractal(new Line(mainLine.getEndX(), mainLine.getEndY(), (x0+mainLine.getEndX())*0.5, (y0+mainLine.getEndY())*0.5), theta));
+            result.getChildren().addAll(tree_fractal(new Line(mainLine.getEndX(), mainLine.getEndY(), (x1+mainLine.getEndX())*0.5, (y1+mainLine.getEndY())*0.5), theta));
         }
         return result;
     }
 
-    private static Group Sierpiński_triangle() throws InterruptedException {
+    private static Group Sierpinski_triangle() throws InterruptedException {
         Group result = new Group();
         Polygon triangle = new Polygon();
         triangle.getPoints().setAll(0.0, 0.0, 360.0, Math.tan(Math.PI / 3) * 360, 720.0, 0.0);
         result.getChildren().add(triangle);
-        result.getChildren().addAll(Sierpiński_triangle(180.0, Math.tan(Math.PI / 3) * 180, 360.0, 0.0, 540.0, Math.tan(Math.PI / 3) * 180));
+        result.getChildren().addAll(Sierpinski_triangle(180.0, Math.tan(Math.PI / 3) * 180, 360.0, 0.0, 540.0, Math.tan(Math.PI / 3) * 180));
         return result;
     }
 
-    private static Group Sierpiński_triangle(double x1, double y1, double x2, double y2, double x3, double y3) throws InterruptedException {
+    private static Group Sierpinski_triangle(double x1, double y1, double x2, double y2, double x3, double y3) throws InterruptedException {
         Group result = new Group();
         Polygon triangle = new Polygon();
         triangle.getPoints().setAll(x1, y1, x2, y2, x3, y3);
@@ -97,10 +118,10 @@ public class Main extends Application {
         result.getChildren().add(triangle);
         double l = Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
         if (l > 1){
-            result.getChildren().addAll(Sierpiński_triangle(1.5*x1 - x2*0.5 , (y1 + y2)*0.5 , x1, y2, (x1 + x2)*0.5, (y1 + y2)*0.5));
+            result.getChildren().addAll(Sierpinski_triangle(1.5*x1 - x2*0.5 , (y1 + y2)*0.5 , x1, y2, (x1 + x2)*0.5, (y1 + y2)*0.5));
             double v = y1 + (x3 - x1) * 0.25 / Math.tan(Math.PI / 6);
-            result.getChildren().addAll(Sierpiński_triangle((x1+x2)*0.5 , v, x2, y1, (x3 + x2)*0.5, v));
-            result.getChildren().addAll(Sierpiński_triangle((x2+x3)*0.5, (y2+y3)*0.5, x3, y2, 1.5*x3 - x2*0.5, (y2+y3)*0.5));
+            result.getChildren().addAll(Sierpinski_triangle((x1+x2)*0.5 , v, x2, y1, (x3 + x2)*0.5, v));
+            result.getChildren().addAll(Sierpinski_triangle((x2+x3)*0.5, (y2+y3)*0.5, x3, y2, 1.5*x3 - x2*0.5, (y2+y3)*0.5));
         }
         return result;
     }
