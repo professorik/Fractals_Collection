@@ -5,31 +5,63 @@
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
+import javafx.scene.shape.Polygon;
 import javafx.stage.Stage;
 
-import java.util.ArrayList;
+import java.awt.image.BufferedImage;
+
 
 public class Main extends Application {
 
+    int i;
+
     @Override
     public void start(Stage primaryStage) throws Exception {
-        AnchorPane anchorPane = new AnchorPane();
-        ScrollPane scrollPane = new ScrollPane(anchorPane);
+        Group mainGroup = new Group();
+        ScrollPane scrollPane = new ScrollPane(mainGroup);
         Scene scene = new Scene(scrollPane, 720, 720);
         primaryStage.setTitle("Fractals");
         primaryStage.setScene(scene);
         primaryStage.show();
-        //anchorPane.getChildren().add(Sierpiński_triangle());
-        //anchorPane.getChildren().add(circleFractal(360, 360,  360));
-        anchorPane.getChildren().add(tree_fractal(new Line(360, 540, 360, 360), 7*Math.PI/9));
+        //mainGroup.getChildren().add(Sierpiński_triangle());
+        //mainGroup.getChildren().add(circleFractal(360, 360,  360));
+        //mainGroup.getChildren().add(tree_fractal(new Line(360, 540, 360, 360), 7*Math.PI/9));
+        mainGroup.getChildren().add(Mandelbrot_set());
     }
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    private static Group Mandelbrot_set(){
+        Canvas canvas = new Canvas(); canvas.setHeight(720.0); canvas.setWidth(1440);
+        double width = canvas.getWidth(), height = canvas.getHeight();
+        int zoom = 1700;
+        int max = 100;
+        for (int row = 0; row < height; row++) {
+            for (int col = 0; col < width; col++) {
+                double c_re = (col - width/2.0)*4.0/zoom;
+                double c_im = (row - height/2.0)*4.0/zoom;
+                double x = 0, y = 0;
+                int iteration = max;
+                while (x*x+y*y <= 4 && iteration-- > 0) {
+                    double x_new = x*x - y*y + c_re;
+                    y = 2*x*y + c_im;
+                    x = x_new;
+                }
+                BufferedImage img = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
+                img.setRGB(0, 0, iteration | (iteration << 4));
+                java.awt.Color c = new java.awt.Color(img.getRGB(0, 0));
+                canvas.getGraphicsContext2D().getPixelWriter().setColor(col, row, Color.rgb(c.getRed(), c.getGreen(), c.getBlue()));
+            }
+        }
+        Group temp = new Group();
+        temp.getChildren().add(canvas);
+        return temp;
     }
 
     private static Group tree_fractal(Line mainLine, double teta) throws InterruptedException {
