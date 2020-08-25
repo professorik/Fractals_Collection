@@ -11,6 +11,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 import javafx.scene.shape.Polygon;
+import javafx.scene.transform.Rotate;
+import javafx.scene.transform.Translate;
 import javafx.stage.Stage;
 
 import java.awt.image.BufferedImage;
@@ -30,7 +32,8 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
         //mainGroup.getChildren().add(Sierpinski_triangle());
-        mainGroup.getChildren().add(Sierpinski_carpet(new Rectangle(300, 300, 180, 180)));
+        //mainGroup.getChildren().add(Sierpinski_carpet(new Rectangle(300, 300, 180, 180)));
+        mainGroup.getChildren().add(Pythagoras_Tree(new Rectangle(600, 600, 180, 180), 45, 1, 600, 600, 0));
         pane.getChildren().addAll(mainGroup);
         //mainGroup.getChildren().add(circleFractal(360, 360,  360));
         //mainGroup.getChildren().add(tree_fractal(new Line(360, 540, 360, 360), 7*Math.PI/9));
@@ -41,11 +44,46 @@ public class Main extends Application {
         launch(args);
     }
 
+    private static Group Pythagoras_Tree(Rectangle mainRect, double theta, int i, double x, double y, double A){
+        Group result = new Group();
+
+        double w = mainRect.getWidth();
+        double angle = Math.PI * theta / 180;
+        double n_w = w/(2*Math.cos(angle));
+
+        result.getChildren().addAll(mainRect);
+        if (w > 5){
+            double x2 = x - n_w * Math.sin((A + theta) * Math.PI / 180);
+            double y2 = y - n_w * Math.cos((A + theta) * Math.PI / 180);
+            Rotate rotate = new Rotate();
+            rotate.setAngle(-A-theta);
+            rotate.setPivotX(x);
+            rotate.setPivotY(y);
+            Rectangle temp = new Rectangle(x, y-n_w, n_w, n_w);
+            temp.getTransforms().add(rotate);
+            result.getChildren().addAll(Pythagoras_Tree(temp, theta, i+1, x2, y2, A+theta));
+
+            double X = x + w*Math.cos(A * Math.PI / 180);
+            double Y = y - w*Math.sin(A * Math.PI / 180);
+            double x3 = X - Math.cos(angle + Math.PI*0.25);
+            double y3 = Y - Math.sin(angle + Math.PI*0.25);
+            Rotate rotate2 = new Rotate();
+            rotate2.setAngle(theta-A);
+            rotate2.setPivotX(x3);
+            rotate2.setPivotY(y3);
+            Rectangle temp2 = new Rectangle(x3-n_w, y3-n_w, n_w, n_w);
+            temp2.getTransforms().add(rotate2);
+            double phi = Math.PI * 0.25 + angle - A * Math.PI / 180;
+            result.getChildren().addAll(Pythagoras_Tree(temp2, theta, i+1, x3 - Math.sqrt(2)*n_w*Math.cos(phi), y3 - Math.sqrt(2)*n_w*Math.sin(phi), A-theta));
+        }
+        return result;
+    }
+
     private static Group Sierpinski_carpet(Rectangle mainRect) throws InterruptedException {
         Group result = new Group();
         result.getChildren().add(mainRect);
-        if (mainRect.getWidth() > 1){
-            double x = mainRect.getX(), y = mainRect.getY(), w = mainRect.getWidth();
+        double x = mainRect.getX(), y = mainRect.getY(), w = mainRect.getWidth();
+        if (w > 1){
             result.getChildren().addAll(Sierpinski_carpet(new Rectangle(x+w/3, y-2*w/3, w/3, w/3)));
             result.getChildren().addAll(Sierpinski_carpet(new Rectangle(x+w/3, y+4*w/3, w/3, w/3)));
             result.getChildren().addAll(Sierpinski_carpet(new Rectangle(x-2*w/3, y+w/3, w/3, w/3)));
