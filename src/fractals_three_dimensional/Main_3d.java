@@ -15,10 +15,12 @@ import javafx.util.Duration;
 public class Main_3d extends Application {
     @Override
     public void start(Stage stage) {
-        Group root = new Group(Jerusalem_cube(new Box(300, 300, 300), 0, 0, 0));
+        Group root = Sierpinski_tetrahedron(400, 600, 0, -250,  0);
+
+                //new Group(Jerusalem_cube(new Box(300, 300, 300), 0, 0, 0));
         //Group root = new Group(Menger_sponge(new Box(162, 162, 162), 0, 0, 0));
         Scene scene = new Scene(root, 720, 720, true, SceneAntialiasing.BALANCED);
-        scene.setFill(Color.BLACK);
+        scene.setFill(Color.GREEN);
         Translate pivot = new Translate();
         pivot.setX(0);
         pivot.setY(0);
@@ -51,6 +53,22 @@ public class Main_3d extends Application {
     }
     public static void main(String args[]){
         launch(args);
+    }
+
+    private static Group Sierpinski_tetrahedron(float height, float hypotenuse, double x, double y, double z){
+        Group result = new Group();
+        ColoredPyramid coloredPyramid = new ColoredPyramid();
+        if (hypotenuse > 30){
+            double delta = hypotenuse * 0.125 * Math.sqrt(2);
+            result.getChildren().addAll(Sierpinski_tetrahedron(height*0.5f, hypotenuse*0.5f, x,y,z));
+            result.getChildren().addAll(Sierpinski_tetrahedron(height*0.5f, hypotenuse*0.5f, x+delta,y+height*0.5f,z+delta));
+            result.getChildren().addAll(Sierpinski_tetrahedron(height*0.5f, hypotenuse*0.5f, x+delta,y+height*0.5f,z-delta));
+            result.getChildren().addAll(Sierpinski_tetrahedron(height*0.5f, hypotenuse*0.5f, x-delta,y+height*0.5f,z+delta));
+            result.getChildren().addAll(Sierpinski_tetrahedron(height*0.5f, hypotenuse*0.5f, x-delta,y+height*0.5f,z-delta));
+        }else {
+            result.getChildren().addAll(coloredPyramid.getPyramid(height, hypotenuse, x, y, z));
+        }
+        return result;
     }
 
     private static Group Menger_sponge(Box mainBox, double x, double y, double z){
